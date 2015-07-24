@@ -88,12 +88,12 @@
 %include "kernel/memory.qdt"
 
 ?func command_extract_args, %$cmd_args, %$cmd_buffer
-  ?local %$src, %$dest
+  ?local %$src, %$dest, %$char
   ? =, %$src, call, memory_skip_char, %$cmd_buffer, ' '
   ? =, %$dest, %$cmd_args
   ?while !=, END, @byte, %$$src
-    ?switch @byte, %$$$src
-      ?case ==, ' '
+    ?switch =, %$$$char, @byte, %$$$src
+      ?case ==, ' ', %$$$char
         ? =, %$$$src, call, memory_skip_char, %$$$src, ' '
         ?if !=, END, @byte, %$$$$src
           ? @byte=, $++, %$$$$dest, END

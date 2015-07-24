@@ -133,16 +133,16 @@ COLOR_ESC equ 01h
 %include "kernel/memory.qdt"
 
 ?func memory_strwidth, %$str
-  ?local %$max_width, %$curr_width, %$strlen, %$i
+  ?local %$max_width, %$curr_width, %$strlen, %$i, %$char
   ? =, %$max_width, 0
   ? =, %$curr_width, 0
   ? =, %$strlen, call, memory_strlen, %$str
   ?for =, %$$i, 0
     ?cond <, %$$i, %$$strlen
-    ?switch @byte, +, %$$$str, %$$$i
-      ?case ==, COLOR_ESC
+    ?switch =, %$$$char, @byte, +, %$$$str, %$$$i
+      ?case ==, COLOR_ESC, %$$$char
         ? ++, %$$$i
-      ?case ==, LF
+      ?case ==, LF, %$$$char
         ? =, %$$$max_width, max, %$$$max_width, %$$$curr_width
         ? =, %$$$curr_width, 0
       ?default
