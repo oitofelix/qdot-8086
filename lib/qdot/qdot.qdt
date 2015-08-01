@@ -21,7 +21,6 @@
 %define QDOT_QDOT_QDT
 %push QDOT_QDOT_QDT
 
-%include "qdot/assembly.qdt"
 %include "qdot/flow.qdt"
 %include "qdot/func.qdt"
 %include "qdot/stack.qdt"

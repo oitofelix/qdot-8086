@@ -132,12 +132,12 @@
     ?if call, memory_streq, %$$$cmd_args, %$$$cmdtable_ptr
       ? +=, %$$$cmdtable_ptr, call, memory_strlen, %$$$cmdtable_ptr
       ? dcall, @word, inc, %$$$cmdtable_ptr, %$$$cmd_args
-      ?return TRUE
+      ?return ?TRUE
     ?else
       ? +=, %$$$cmdtable_ptr, +, 3, call, memory_strlen, %$$$cmdtable_ptr
     ?endif
   ?endwhile
-?endfunc FALSE
+?endfunc ?FALSE
 
 %endif ; IMPORTED_command_run
 %endif ; IMPORT_command_run

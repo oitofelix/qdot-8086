@@ -273,16 +273,16 @@ COLOR_ESC equ 01h
   ?local %$i, %$strlen
   ? =, %$strlen, call, memory_strlen, %$str0
   ?if !=, %$strlen, call, memory_strlen, %$str1
-    ?return FALSE
+    ?return ?FALSE
   ?endif
   ?for =, %$$i, 0
     ?cond <, %$$i, %$$strlen
     ?if !=, @byte, +, %$$str0, %$$i, \
             @byte, +, %$$str1, %$$i
-      ?return FALSE
+      ?return ?FALSE
     ?endif
   ?next ++, %$$i
-?endfunc TRUE
+?endfunc ?TRUE
 
 %endif ; IMPORTED_memory_streq
 %endif ; IMPORT_memory_streq
@@ -347,12 +347,12 @@ COLOR_ESC equ 01h
 %ifndef IMPORTED_memory_skip_char
 %define IMPORTED_memory_skip_char
 
-?func memory_skip_char, %$str, %$char
-  ?local %$str_ptr
-  ?for =, %$$str_ptr, %$str
-    ?cond ==, %$$char, @byte, %$$str_ptr
-  ?next ++, %$$str_ptr
-?endfunc %$str_ptr
+?func memory_skip_char, %$ptr, %$char
+  ?local %$nptr
+  ?for =, %$$nptr, %$ptr
+    ?cond ==, %$$char, @byte, %$$nptr
+  ?next ++, %$$nptr
+?endfunc %$nptr
 
 %endif ; IMPORTED_memory_skip_char
 %endif ; IMPORT_memory_skip_char
@@ -402,10 +402,10 @@ COLOR_ESC equ 01h
 %ifndef IMPORTED_memory_charseq_len
 %define IMPORTED_memory_charseq_len
 
-?func memory_charseq_len, %$str, %$char
+?func memory_charseq_len, %$ptr, %$char
   ?local %$i
   ?for =, %$$i, 0
-    ?cond ==, %$$char, @byte, +, %$$str, %$$i
+    ?cond ==, %$$char, @byte, +, %$$ptr, %$$i
   ?next ++, %$$i
 ?endfunc %$i
 

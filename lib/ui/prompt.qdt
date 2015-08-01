@@ -117,9 +117,9 @@
   ?while !=, %$$input_char, RETURN
   ? call, video_disable_cursor
   ?if ==, %$acceptable_char, %$char_yes
-    ?return TRUE
+    ?return ?TRUE
   ?else
-    ?return FALSE
+    ?return ?FALSE
   ?endif
 ?endfunc
 
