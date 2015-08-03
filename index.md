@@ -73,6 +73,7 @@ __Table of contents__
 0. [kernel/debug.qdt]({{page.base_local}}{{site.baseurl}}/#kerneldebugqdt)
 0. [math/random.qdt]({{page.base_local}}{{site.baseurl}}/#mathrandomqdt)
 0. [os/dos.qdt]({{page.base_local}}{{site.baseurl}}/#osdosqdt)
+0. [ui/prompt.qdt]({{page.base_local}}{{site.baseurl}}/#uipromptqdt)
 
 
 ### Use
@@ -1434,6 +1435,10 @@ variable values and print information to the screen.
 - __`debug_print_word, %$word`__: print the word value `%word`;
 
 
+See the file `lib/kernel/debug.qdt` for the implementation details of
+kernel debug routines.
+
+
 ### math/random.qdt
 
 This module provides a 32-bit Galois LFSR pseudo-random number
@@ -1447,6 +1452,9 @@ Then, one can generate random numbers with:
 - __`%$rnd, random_number, %$a, %$b`__: assign to `%$rnd` a random
   number between `%$a` and `%$b` inclusive;
 
+See the file `lib/math/random.qdt` for the implementation details of
+math random functions.
+
 
 ### os/dos.qdt
 
@@ -1457,7 +1465,35 @@ This module handles functions specific to _DOS_.
 - __`dos_exit`__: quit program and return to _DOS_;
 
 
+See the file `lib/os/dos.qdt` for the implementation details of DOS
+functions.
 
+
+### ui/prompt.qdt
+
+This module is used to present prompts to the user and read back his
+input.
+
+- __`prompt_read_str, %str, %$buffer, %$max, %$color, %$outchar`__:
+  print the string `%$str`, which may have text attribute codes, and
+  call `keyboard_read_str` with the remaining arguments;
+- __`prompt_read_str_vhcent, %$dy, %$dx, %$str, %$buffer, %$max,
+  %$color, %$outchar`__: center prompt horizontally and vertically on
+  the screen, call `video_setpos_rel` with arguments `%$dy` and `%$dx`,
+  and call `prompt_read_str` with the remaining arguments;
+- __`%$b, prompt_yes_or_no, %$str, %$char_yes, %$char_no,
+  %$char_default, %$color`__: print the string `%$str` and the character
+  `%$char_default`, with default text attribute `%$color` --- setting
+  `%$char_default` as the current selection --- and wait for keyboard
+  input that matches `%$char_yes`, `%$char_no`, or `RETURN`.  For the
+  two former cases change the current selection to the respective
+  character --- replacing the previous in screen with it, and in the
+  latter case assign `?TRUE` (`?FALSE` resp.) to `%$b` in case the
+  current selection is `%$char_yes` (`%$char_no` resp.).  In case a
+  different character is inputted ring the bell and keep waiting.
+
+See the file `lib/ui/prompt.qdt` for the implementation details of
+user interface prompt functions.
 
 
 </div>
