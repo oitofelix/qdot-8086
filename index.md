@@ -9,7 +9,7 @@ tags: >
 license: CC BY-SA 4.0
 layout: oitofelix-homepage
 base: http://oitofelix.github.io
-base_local: http://localhost:4000
+#base_local: http://localhost:4000
 ---
 <div id="markdown" markdown="1">
 ## QDot 8086
