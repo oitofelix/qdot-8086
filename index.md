@@ -72,6 +72,7 @@ __Table of contents__
 0. [kernel/boot.qdt]({{page.base_local}}{{site.baseurl}}/#kernelbootqdt)
 0. [kernel/debug.qdt]({{page.base_local}}{{site.baseurl}}/#kerneldebugqdt)
 0. [math/random.qdt]({{page.base_local}}{{site.baseurl}}/#mathrandomqdt)
+0. [os/dos.qdt]({{page.base_local}}{{site.baseurl}}/#osdosqdt)
 
 
 ### Use
@@ -1436,7 +1437,7 @@ variable values and print information to the screen.
 ### math/random.qdt
 
 This module provides a 32-bit Galois LFSR pseudo-random number
-generator.  In order to use it one have to first initialize it.
+generator.  In order to use it one has to first initialize it.
 
 - __`random_init`__: seed the random number generator from the current
   time;
@@ -1445,6 +1446,17 @@ Then, one can generate random numbers with:
 
 - __`%$rnd, random_number, %$a, %$b`__: assign to `%$rnd` a random
   number between `%$a` and `%$b` inclusive;
+
+
+### os/dos.qdt
+
+This module handles functions specific to _DOS_.
+
+- __`%$b, dos_check_if_running`__: assign `?RETURN` to `%$b` if _DOS_
+  is running, `?FALSE` otherwise;
+- __`dos_exit`__: quit program and return to _DOS_;
+
+
 
 
 
