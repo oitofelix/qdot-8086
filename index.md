@@ -9,7 +9,7 @@ tags: >
 license: CC BY-SA 4.0
 layout: oitofelix-homepage
 base: http://oitofelix.github.io
-#base_local: http://localhost:4000
+base_local: http://localhost:4000
 ---
 <div id="markdown" markdown="1">
 ## QDot 8086
@@ -17,28 +17,28 @@ base: http://oitofelix.github.io
 __QDot 8086__ is a mid-level programming language targeting the
 original IBM-PC architecture written as a set of macros for
 [NASM](http://www.nasm.us/) --- _the Netwide Assembler_.  The idea
-behind it is to make it easy to write fast, correct and maintainable
-code in a language almost as expressive as _C_ but without giving up
-all control Assembly language grants to programmers.  For that end
-NASM's powerful preprocessing and assembling capabilities are used to
-achieve a machinery that very closely resembles a compiler.  In its
-elegant and homogeneous stack-based implementation, _QDot_ allows the
-programmer to write code easy to read, write and change by abstracting
-low-level details and standardizing interfaces, therefore, preventing
-errors and speeding up development.  It features support to functions
-with an arbitrary number of parameters and multiple return values,
-global and function-local variables, loop and conditional flow-control
-constructs, evaluation of arbitrarily complex expressions, and symbol
-importing.  _QDot_ has also a companion standard library that is fully
-BIOS-based and provides a versatile metamorphic boot-loader, that
-makes it simple to build a binary that is simultaneously a valid DOS
-executable and a bootable image --- a property known as
+behind it is to make it easy to write small, fast, correct and
+maintainable code in a language almost as expressive as _C_ but
+without giving up all control Assembly language grants to programmers.
+It features support to functions of an arbitrary number of parameters
+and multiple return values, global and function-local variables, loop
+and conditional flow-control constructs, evaluation of arbitrarily
+complex stack-based expressions, symbol importing and primitive
+debugging.  In order to accomplish this, NASM's powerful preprocessing
+and assembling capabilities are used to achieve a machinery that very
+closely resembles a compiler.  _QDot_ has also a companion standard
+library that is fully BIOS-based, thus OS-independent, which provides
+array processing, keyboard, video, disk and speaker I/O, timing,
+low-level debugging, math functions, user interface procedures and
+last but not least a versatile metamorphic boot-loader, that makes it
+simple to build a binary that is simultaneously a valid DOS executable
+and a bootable image --- a property known as
 _run-within-OS-or-bootstrap-itself-without-OS_.  There are already a
 couple of programs implemented in _QDot_ as a proof of concept:
 [Terminal Matrix 8086](/terminal-matrix-8086) and
 [DeciMatrix](/decimatrix-8086).  _QDot_ currently supports only the
 tiny memory model (`.COM` binaries --- whose code, data and stack fit
-all within a 64kb segment's boundaries).
+all within 64kb segment boundaries).
 
 
 ### Download
@@ -65,6 +65,12 @@ __Table of contents__
 0. [Standard library]({{page.base_local}}{{site.baseurl}}/#standard-library)
 0. [kernel/memory.qdt]({{page.base_local}}{{site.baseurl}}/#kernelmemoryqdt)
 0. [kernel/video.qdt]({{page.base_local}}{{site.baseurl}}/#kernelvideoqdt)
+0. [kernel/keyboard.qdt]({{page.base_local}}{{site.baseurl}}/#kernelkeyboardqdt)
+0. [kernel/timer.qdt]({{page.base_local}}{{site.baseurl}}/#kerneltimerqdt)
+0. [kernel/speaker.qdt]({{page.base_local}}{{site.baseurl}}/#kernelspeakerqdt)
+0. [kernel/disk.qdt]({{page.base_local}}{{site.baseurl}}/#kerneldiskqdt)
+0. [kernel/boot.qdt]({{page.base_local}}{{site.baseurl}}/#kernelbootqdt)
+
 
 ### Use
 
@@ -645,10 +651,9 @@ If the programmer wants the main source file of a program to be a
 module, so it can depend on symbols defined by itself --- an elegant
 choice --- he must make sure it obeys the two principles above.  For
 that end, the execution entry point must be isolated from the rest of
-the file, that in turn is composed only of importable symbol blocks.
-
-The very first code inside the main source module must follow along
-the lines:
+the file and the remaining code must be made into importable symbol
+blocks.  The very first code inside the main source module must follow
+along the lines:
 
 <pre>
 %push SRC_PROG_QDT ; push a preprocessor context for this module
@@ -669,10 +674,11 @@ call main  ; call the main procedure defined in this very module
 
 ?import main  ; import the main symbol used above.  This
               ; will expand to all the code it depends upon, and so on
-              ; recursively
+              ; recursively, thus all the program's source code will
+			  ; be compiled and assembled here
 %include "src/prog.qdt"
 
-SECTION .bss ; here is the executable end
+SECTION .bss ; here is the binary end
 .
 .
 .
@@ -1323,9 +1329,88 @@ kernel disk routines.
 This module is intended to provide the
 _run-within-OS-or-bootstrap-itself-without-OS_ capability for programs
 using the standard library.  It's special and must be used in a
-slightly different way than the other common modules.
+different way than other common modules.  To use it one have to make
+two changes: its symbol `boot_sector` must be imported at the entry
+point block of the main module and the assembler must be instructed to
+fill the final binary with zeroes so its size become sector-aligned
+(divisible by 512 bytes).
 
+In respect to the first requirement the following code must be put
+right after the inclusion of the _QDot_ language definition
+(file `qdot/qdot.qdt`):
 
+<pre>
+?import boot_sector
+%include "kernel/boot.qdt"
+</pre>
 
+As for the second requirement, the following code must be placed
+immediately above the beginning of the `.bss` section.
+
+<pre>
+times 512 - ($ - $$) % 512 db 0
+PROGRAM_END:
+</pre>
+
+Borrowing the example from the
+[Symbol importing]({{page.base_local}}{{site.baseurl}}/#symbol-importing)
+section, one should finally have:
+
+<pre>
+%push SRC_PROG_QDT ; push a preprocessor context for this module
+
+%ifndef SRC_PROG_QDT ; ensure this block won't be included twice
+%define SRC_PROG_QDT
+
+CPU 8086
+ORG 100h
+
+%include "qdot/qdot.qdt" ; enable QDot language
+
+?import boot_sector         ; place the standard library's boot sector at
+%include "kernel/boot.qdt"  ; the binary's first 512 bytes
+
+mov sp, 0FFFEh ; setup stack for QDot expressions
+mov bp, sp
+
+call main  ; call the main procedure defined in this very module
+           ; somewhere outside this block
+
+?import main  ; import the main symbol used above.  This
+              ; will expand to all the code it depends upon, and so on
+              ; recursively, thus all the program's source code will
+			  ; be compiled and assembled here
+%include "src/prog.qdt"
+
+; Make this program's size a multiple of the sector size (512 bytes)
+; so the boot loader can exactly load it.
+
+times 512 - ($ - $$) % 512 db 0
+
+PROGRAM_END: ; This global symbol is used by the boot loader to
+             ; calculate the binary's size
+
+SECTION .bss ; here is the binary end
+.
+.
+.
+%endif ; SRC_PROG_QDT
+.
+. ; here are all importable symbol blocks defined by the
+. ; main module
+.
+%pop SRC_TM_QDT ; the module ends here
+</pre>
+
+After these changes your program becomes simultaneously a bootable
+image and a valid DOS executable.  It can be booted from a floppy
+disk, a hard drive, an optical disk or even an USB mass storage
+device.  In the case of optical disks, you can generate an ISO image
+using the resulting executable as a valid _El Torito_ no-emulation
+boot image.  For all other cases it should suffice to write the
+executable to the very first sector of the drive.
+
+See the file `lib/kernel/boot.qdt` for the implementation details of
+kernel boot routines.
 
 </div>
