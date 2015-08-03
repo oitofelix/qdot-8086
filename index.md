@@ -70,6 +70,7 @@ __Table of contents__
 0. [kernel/speaker.qdt]({{page.base_local}}{{site.baseurl}}/#kernelspeakerqdt)
 0. [kernel/disk.qdt]({{page.base_local}}{{site.baseurl}}/#kerneldiskqdt)
 0. [kernel/boot.qdt]({{page.base_local}}{{site.baseurl}}/#kernelbootqdt)
+0. [kernel/debug.qdt]({{page.base_local}}{{site.baseurl}}/#kerneldebugqdt)
 
 
 ### Use
@@ -1412,5 +1413,25 @@ executable to the very first sector of the drive.
 
 See the file `lib/kernel/boot.qdt` for the implementation details of
 kernel boot routines.
+
+
+### kernel/debug.qdt
+
+This module provides primitive debugging support for the boot process,
+since a proper debugger is not usually available at that stage.
+
+When inspecting the root of a problem, it's important to inspect
+variables values and print information to the screen.
+
+- __`debug_print_char, %$char`__: print character `%$char` in teletype
+  mode;
+- __`debug_print_hex_digit, %$digit`__: print the low hex digit value
+  of `%$digit`;
+- __`debug_print_byte, %$byte`__: print the low byte value of
+  `%$byte`;
+- __`debug_print_word, %$word`__: print the word value `%word`;
+
+
+
 
 </div>
