@@ -71,6 +71,7 @@ __Table of contents__
 0. [kernel/disk.qdt]({{page.base_local}}{{site.baseurl}}/#kerneldiskqdt)
 0. [kernel/boot.qdt]({{page.base_local}}{{site.baseurl}}/#kernelbootqdt)
 0. [kernel/debug.qdt]({{page.base_local}}{{site.baseurl}}/#kerneldebugqdt)
+0. [math/random.qdt]({{page.base_local}}{{site.baseurl}}/#mathrandomqdt)
 
 
 ### Use
@@ -1421,7 +1422,7 @@ This module provides primitive debugging support for the boot process,
 since a proper debugger is not usually available at that stage.
 
 When inspecting the root of a problem, it's important to inspect
-variables values and print information to the screen.
+variable values and print information to the screen.
 
 - __`debug_print_char, %$char`__: print character `%$char` in teletype
   mode;
@@ -1431,6 +1432,19 @@ variables values and print information to the screen.
   `%$byte`;
 - __`debug_print_word, %$word`__: print the word value `%word`;
 
+
+### math/random.qdt
+
+This module provides a 32-bit Galois LFSR pseudo-random number
+generator.  In order to use it one have to first initialize it.
+
+- __`random_init`__: seed the random number generator from the current
+  time;
+
+Then, one can generate random numbers with:
+
+- __`%$rnd, random_number, %$a, %$b`__: assign to `%$rnd` a random
+  number between `%$a` and `%$b` inclusive;
 
 
 
