@@ -74,7 +74,7 @@ __Table of contents__
 0. [math/random.qdt]({{page.base_local}}{{site.baseurl}}/#mathrandomqdt)
 0. [os/dos.qdt]({{page.base_local}}{{site.baseurl}}/#osdosqdt)
 0. [ui/prompt.qdt]({{page.base_local}}{{site.baseurl}}/#uipromptqdt)
-
+0. [ui/command.qdt]({{page.base_local}}{{site.baseurl}}/#uicommandqdt)
 
 ### Use
 
@@ -843,7 +843,7 @@ character.  In order to define a multi-row and complete string one
 needs to use the array definition macros:
 
 - __`array`__: open an array definition block;
-- __`endarray`__: end an array definition block;
+- __`endarray`__: close an array definition block;
 
 Use it like this:
 
@@ -1494,6 +1494,61 @@ input.
 
 See the file `lib/ui/prompt.qdt` for the implementation details of
 user interface prompt functions.
+
+
+### ui/command.qdt
+
+This module provides basic command-line processing capabilities.  To
+understand it, the following definitions are fundamental.
+
+- _Token_ is any sequence of characters within a string that doesn't
+  contain the space character.
+- _Tokenization_ is the process of identifying tokens in a string and
+  copying them to an array, whose elements will be each token in the
+  order they are found in the original string.
+
+Considering that, to tokenize a string one can use:
+
+- __`command_extract_args, %$cmd_args, %$cmd_buffer`__: tokenize the
+  string `cmd_buffer` into the array `%$cmd_args`.  The memory region
+  pointed by `%$cmd_args` must have the same size as `cmd_buffer`.
+
+The standard library is capable of invoking commands automatically,
+given a command-line string.  In order to do that, however, it's
+necessary to define a command table using the following macros:
+
+- __`cmdtable`__: open a command table definition;
+- __`cmd name, func`__: map the command whose name is given by the
+  string `name` to the function `func`;
+- __`endcmdtable`__: close a command table definition;
+
+For example, consider the command table:
+
+<pre>
+prog_cmdtable:
+  cmdtable
+    cmd 'VER', cmd_ver
+    cmd 'HELP', cmd_help
+    cmd 'EXIT', cmd_exit
+  endcmdtable
+</pre>
+
+Then, the following routine is used to automatically invoke any of
+these possible commands:
+
+- __`%$b, command_run, %$cmdargs, %$cmdstr, %$cmdtable`__: tokenize
+  command arguments from the command string `%$cmdstr` to the
+  `%$cmdargs` array, which must have the same size as the former, then
+  call the function associated with the command whose name is given by
+  the first element in `%$cmdargs` according to the command table
+  `%$cmdtable` and assign `?TRUE` to `%$b` --- in case it exists, do
+  nothing and assign `?FALSE` to `%$b` otherwise.  A command function
+  is called with `%$cmdargs` as its solely argument, so the function
+  can have access to its command-line arguments;
+
+See the file `lib/ui/command.qdt` for the implementation details of
+user interface command-line functions.
+
 
 
 </div>
