@@ -75,6 +75,9 @@ __Table of contents__
 0. [os/dos.qdt]({{page.base_local}}{{site.baseurl}}/#osdosqdt)
 0. [ui/prompt.qdt]({{page.base_local}}{{site.baseurl}}/#uipromptqdt)
 0. [ui/command.qdt]({{page.base_local}}{{site.baseurl}}/#uicommandqdt)
+0. [ui/progbar.qdt]({{page.base_local}}{{site.baseurl}}/#uiprogbarqdt)
+0. [ui/scrnsvr.qdt]({{page.base_local}}{{site.baseurl}}/#uiscrnsvrqdt)
+
 
 ### Use
 
@@ -1549,6 +1552,40 @@ these possible commands:
 See the file `lib/ui/command.qdt` for the implementation details of
 user interface command-line functions.
 
+
+### ui/progbar.qdt
+
+This module assists in drawing progress bars used to represent an
+ongoing process.
+
+- __`progbar_draw, %$size, %$ticks, %$callback, %$callback_data,
+  %$numcalls`__: draw a progress bar of size `%$size` that takes
+  `%$ticks` clock ticks to fill (ignoring the callback processing time).
+  Evenly distribute throughout this time `%$numcalls` calls to the
+  function `%$callback`, passing to it `%$callback_data` as its only
+  argument;
+- __`progbar_draw_hfull, %$ticks, %$callback, %$callback_data, \
+  %$numcalls`__: call `progbar_draw` with a full-width size and the
+  remaining arguments;
+- __`progbar_draw_r, %$size, %$ticks, %$callback, %$callback_data, \
+  %$numcalls`__: right align cursor and call `progbar_draw` with all
+  arguments;
+
+See the file `lib/ui/progbar.qdt` for the implementation details of
+user interface progress bar functions.
+
+
+### ui/scrnsvr.qdt
+
+This module has animation procedures intended to be used as
+screen-savers by applications.
+
+- __`scrnsvr_dcmatrix, %$forever`__: start _DeciMatrix_ screen-saver.
+  If `%$forever` is `?FALSE` return at any key press, otherwise never
+  return;
+
+See the file `lib/ui/scrnsvr.qdt` for the implementation details of
+user interface screen-saver functions.
 
 
 </div>
