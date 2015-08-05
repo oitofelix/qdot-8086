@@ -52,6 +52,7 @@
 
 ?func debug_print_hex_digit, %$digit
   mov al, %$digit
+  and al, 0Fh
   add al, 30h
   cmp al, 3Ah
   jb .print

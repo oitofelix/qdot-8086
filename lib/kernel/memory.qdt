@@ -461,7 +461,7 @@ COLOR_ESC equ 01h
 ?func memory_array_elem, %$array, %$dim, %$elem
   ?local %$i, %$charseq_len
   ?if ==, 0, %$$dim
-    ?return NULL
+    ?return ?NULL
   ?elseif ==, 1, %$$dim
     ?return +, %$$array, %$$elem
   ?else
@@ -479,7 +479,7 @@ COLOR_ESC equ 01h
       ?endif
     ?next ++, %$$$i
   ?endif
-?endfunc NULL
+?endfunc ?NULL
 
 %endif ; IMPORTED_memory_array_elem
 %endif ; IMPORT_memory_array_elem
