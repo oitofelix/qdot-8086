@@ -9,7 +9,7 @@ tags: >
 license: CC BY-SA 4.0
 layout: oitofelix-homepage
 base: http://oitofelix.github.io
-#base_local: http://localhost:4000
+base_local: http://localhost:4000
 ---
 <div id="markdown" markdown="1">
 ## QDot 8086
@@ -36,16 +36,16 @@ and a bootable image --- a property known as
 _run-within-OS-or-bootstrap-itself-without-OS_.  There are already a
 couple of programs implemented in _QDot_ as a proof of concept:
 [Terminal Matrix 8086](/terminal-matrix-8086) and
-[DeciMatrix](/decimatrix-8086).  _QDot_ currently supports only the
-tiny memory model (`.COM` binaries --- whose code, data and stack fit
-all within 64kb segment boundaries).
+[DeciMatrix 8086](/decimatrix-8086).  _QDot_ currently supports only
+the tiny memory model (`.COM` binaries --- whose code, data and stack
+fit all within 64kb segment boundaries).
 
 
 ### Download
 
 _QDot_ is free software and you can obtain its source code here.
 
-- [QDot 8086 0.1 source code]({{ page.base_local }}{{ site.baseurl }}/qdot-8086-0.1.tar.gz)
+- [QDot86 0.1 source code]({{ page.base_local }}{{ site.baseurl }}/qdot-8086-0.1.tar.gz)
 - [VCS repository](http://github.com/oitofelix/qdot-8086/)
 
 
@@ -111,6 +111,10 @@ _QDot_.  That character, somewhat unusual for identifier names, makes
 it easy to distinguish between code using _QDot_'s facilities and
 standard, or third-party, _NASM_ code.
 
+Often, it's useful to identify which _QDot_ version was used in a
+particular build.  The macro `?version` is defined as _QDot_'s version
+string.
+
 
 ### Numerical constants
 
@@ -152,9 +156,9 @@ referred as `%$$count`, though, if one context deeper --- and so on.
 ### Operators
 
 An operator is a symbol used in stack-based expressions to transform
-the stack and/or variable's values.  _QDot_ has operators analogous to
+the stack and/or variable values.  _QDot_ has operators analogous to
 almost every _C_ language operator and a few more.  Suppose that `a`,
-`b` and `c` refer to the three stack's top-most values, in this order
+`b` and `c` refer to the three top-most stack values, in this order
 from top to bottom, `var` refers to a global or local variable, and
 `id` to a function symbol.  The operators work as follow:
 
@@ -265,7 +269,7 @@ from top to bottom, `var` refers to a global or local variable, and
 
 
 See the file `lib/qdot/stack.qdt` for the implementation details of
-_QDot_'s operators.
+operators.
 
 
 ### Expressions
@@ -347,10 +351,10 @@ The syntax for the `?if` block is:
 Where `condition_0`...`condition_n` are mandatory expressions that
 must evaluate to a boolean value.  Each of
 `condition_0`...`condition_n` are evaluated in sequence until one of
-them evaluates to `?TRUE`, in which case its correspondent sub-block is
-executed.  If no expression evaluates to `?TRUE`, the `?else` sub-block
-is executed, in case there is one, otherwise no code is executed.  The
-`?elseif` or `?else` clauses may be omitted.
+them evaluates to `?TRUE`, in which case its corresponding sub-block
+is executed.  If no expression evaluates to `?TRUE`, the `?else`
+sub-block is executed, in case there is one, otherwise no code is
+executed.  The `?elseif` or `?else` clauses may be omitted.
 
 
 The syntax for the `?switch` block is:
@@ -373,7 +377,7 @@ nothing and `condition_0`...`condition_n` are mandatory expressions
 that must evaluate to a boolean value.  The `[value]` expression is
 evaluated, if given, then each of `condition_0`...`condition_n` are
 evaluated in sequence until one of them evaluates to `?TRUE`, in which
-case its correspondent sub-block is executed.  If no expression
+case its corresponding sub-block is executed.  If no expression
 evaluates to `?TRUE`, the `?default` sub-block is executed, in case
 there is one, otherwise no code is executed.  There is no need for
 some form of break statement as in _C_ because there is no
@@ -570,11 +574,11 @@ Where,
 - `symbol_definition` is the definition of `symbol` itself properly.
   It may be anything that defines `symbol` globally, ranging from
   _NASM_'s equates, or labels used with pseudo-instructions, like
-  `db`, to _QDot_'s function definitions;
+  `db`, to function definitions;
 
 To illustrate this, let's re-define the factorial function to return
 `0` in case of overflow.  First we declare an importable symbol
-defining the maximum allowable value for the factorial's argument:
+defining the maximum allowable value for the factorial argument:
 
 <pre>
 %ifdef IMPORT_FACTORIAL_ARGMAX
@@ -788,8 +792,8 @@ that uses it, like this:
 
 Inside the `lib` directory, every directory that is not `qdot`
 comprises the standard library.  Each of them is associated with a
-major area of application, and below them one can find the _QDot_
-source code files, each corresponding to a specialization within its
+major area of application, and below them one can find the standard
+library's modules, each corresponding to a specialization within its
 respective area.  Currently the standard library comprehend the
 following directories:
 
@@ -799,10 +803,44 @@ following directories:
 - __ui__: High-level user interface procedures;
 
 In order to avoid clashes in the global name space, by convention,
-every function symbol has a prefix which corresponds to the file to
+every function symbol has a prefix which corresponds to the module to
 which it pertains.  For instance, the above `video_cls` function
-pertains to the file `video.qdt`, that in turn is contained inside the
-`kernel` directory.
+pertains to the module `video.qdt`, that in turn is contained inside
+the `kernel` directory.
+
+Below functions are presented with the following syntax
+
+- __`%$r0, ..., %$rn, func, %$a0, ..., %$an`__: imperative text
+  demonstrating behavior;
+
+where:
+
+- `func` is the function symbol;
+- `%$r0`,...,`%$rn` are the function return values;
+- `%$a0`,...,`%$an` are the function arguments;
+
+Return values and arguments may be omitted in case they are not
+expected by the particular function at hand.  An imperative text goes
+along with the function demonstrating how it behaves.  For the sake of
+simplicity, each return value is regarded as a variable to which the
+function can assign to, in order to return a value at its respective
+position.
+
+Single-line macros are presented with the syntax:
+
+- __`macro(a0,...,an)`__: imperative text demonstrating expansion;
+
+And multi-line macros with:
+
+- __`macro a0, ..., an`__: imperative text demonstrating high-level
+  meaning;
+
+where `a0`...`an` are the arguments of the macros, that may be omitted
+in case the macro at hand doesn't expect them.  An imperative text of
+expansion or a high-level meaning goes along each macro description.
+Notice that single-line and multi-line macros accepting no argument
+can't be distinguished by the syntax presentation, in which case that
+might be done in the text, if necessary at all.
 
 
 ### kernel/memory.qdt
@@ -822,23 +860,25 @@ employed to define strings:
 It's used like this:
 
 <pre>
-string 'This is a string!'
+label:
+  string 'This is a string!'
 </pre>
 
-Besides `END`, there are two more characters defined by the standard
-library as having special meaning in strings: `LF` and `COLOR_ESC`.
-The former terminates a row and the latter introduces an embedded text
-attribute code.  Both are handled as expected by memory and video
-routines.  Normally, one don't need to use them directly because there
-are higher-level macros for the help (for `COLOR_ESC` see the `cor`
-and `bcor` macros of `kernel/video.qdt`):
+The `label` symbol is used to make reference to the string's
+beginning.  Besides `END`, there are two more characters defined by
+the standard library as having special meaning in strings: `LF` and
+`COLOR_ESC`.  The former terminates a row and the latter introduces an
+embedded text attribute code.  Both are handled as expected by memory
+and video routines.  Normally, one don't need to use them directly
+because there are higher-level macros for the help (for `COLOR_ESC`
+see the `cor` and `bcor` macros of `kernel/video.qdt`):
 
 - __`row`__: define an `LF` terminated sequence of characters;
 
 It's used like this:
 
 <pre>
-row 'This is a string!'
+row 'This is a row!'
 </pre>
 
 However, that is not a complete string because it lacks the terminator
@@ -851,11 +891,12 @@ needs to use the array definition macros:
 Use it like this:
 
 <pre>
-array
-  row "This is the first row."
-  row "This is the second row."
-  row "This is the third row."
-endarray
+label:
+  array
+    row "This is the first row."
+    row "This is the second row."
+    row "This is the third row."
+  endarray
 </pre>
 
 That is an 1-dimensional array, that's to say, a string.  Moreover,
@@ -863,44 +904,48 @@ it's possible to define an array of strings, namely, a 2-dimensional
 array:
 
 <pre>
-array
-  string "This string is at index 0"
-  string "This string is at index 1"
-  string "This string is at index 2"
-endarray
+label:
+  array
+    string "This string is at index 0"
+    string "This string is at index 1"
+    string "This string is at index 2"
+  endarray
 </pre>
 
 Or even an array of 2-dimensional arrays --- a 3-dimensional array:
 
 <pre>
-array
-
+label:
   array
-    string "This is an 1-dimensional element at 0,0"
-    string "This is an 1-dimensional element at 0,1"
-    string "This is an 1-dimensional element at 0,2"
-  endarray
 
-  array
-    string "This is an 1-dimensional element at 1,0"
-    string "This is an 1-dimensional element at 1,1"
-    string "This is an 1-dimensional element at 1,2"
-  endarray
+	array
+	  string "This is an 1-dimensional element at 0,0"
+	  string "This is an 1-dimensional element at 0,1"
+	  string "This is an 1-dimensional element at 0,2"
+	endarray
 
-  array
-    string "This is an 1-dimensional element at 2,0"
-    string "This is an 1-dimensional element at 2,1"
-    string "This is an 1-dimensional element at 2,2"
-  endarray
+	array
+	  string "This is an 1-dimensional element at 1,0"
+	  string "This is an 1-dimensional element at 1,1"
+	  string "This is an 1-dimensional element at 1,2"
+	endarray
 
-endarray
+	array
+	  string "This is an 1-dimensional element at 2,0"
+	  string "This is an 1-dimensional element at 2,1"
+	  string "This is an 1-dimensional element at 2,2"
+	endarray
+
+  endarray
 </pre>
 
 And so on, recursively, to an arbitrarily higher dimensionality.  The
 general definition given by the standard library for an array of
 dimension _n_ is "a sequence of characters terminated by _n_
-consecutive `END` characters".  With those definitions in mind we can
-begin to explore the functions available for array processing.
+consecutive `END` characters".  Notice that, as in the string case,
+the `label` symbol is used as a reference to the array itself.  With
+those definitions in mind we can begin to explore the functions
+available for array processing.
 
 The two general array functions that can work with arrays of arbitrary
 dimensions are:
@@ -1290,7 +1335,7 @@ insignificant in comparison to the wait time.
 The time can be specified in seconds to the `timer_sleep` and
 `timer_alarm` functions by means of an intermediate macro:
 
-- __`timer_seconds2ticks(s)`__: expands to the number of clock ticks
+- __`timer_seconds2ticks(s)`__: expand to the number of clock ticks
   `s` seconds are comprised of.
 
 See the file `lib/kernel/timer.qdt` for the implementation details of
@@ -1429,13 +1474,14 @@ since a proper debugger is not usually available at that stage.
 When inspecting the root of a problem, it's important to inspect
 variable values and print information to the screen.
 
-- __`debug_print_char, %$char`__: print character `%$char` in teletype
-  mode;
-- __`debug_print_hex_digit, %$digit`__: print the low hex digit value
-  of `%$digit`;
-- __`debug_print_byte, %$byte`__: print the low byte value of
-  `%$byte`;
-- __`debug_print_word, %$word`__: print the word value `%word`;
+- __`debug_print_char, %$char`__: print character at lower byte of
+  `%$char` in teletype mode;
+- __`debug_print_nibble, %$n`__: print the low nibble of `%$n` in
+  hexadecimal;
+- __`debug_print_byte, %$n`__: print the low byte of `%$n` in
+  hexadecimal;
+- __`debug_print_word, %$n`__: print the word value `%$n` in
+  hexadecimal;
 
 
 See the file `lib/kernel/debug.qdt` for the implementation details of
@@ -1447,7 +1493,7 @@ kernel debug routines.
 This module provides a 32-bit Galois LFSR pseudo-random number
 generator.  In order to use it one has to first initialize it.
 
-- __`random_init`__: seed the random number generator from the current
+- __`random_init`__: seed the random number generator with the current
   time;
 
 Then, one can generate random numbers with:
@@ -1525,7 +1571,8 @@ necessary to define a command table using the following macros:
   string `name` to the function `func`;
 - __`endcmdtable`__: close a command table definition;
 
-For example, consider the command table:
+For example, consider the command table, where `prog_cmdtable` is the
+symbol used to refer to it:
 
 <pre>
 prog_cmdtable:
@@ -1542,12 +1589,22 @@ these possible commands:
 - __`%$b, command_run, %$cmdargs, %$cmdstr, %$cmdtable`__: tokenize
   command arguments from the command string `%$cmdstr` to the
   `%$cmdargs` array, which must have the same size as the former, then
-  call the function associated with the command whose name is given by
-  the first element in `%$cmdargs` according to the command table
-  `%$cmdtable` and assign `?TRUE` to `%$b` --- in case it exists, do
+  call the function associated with the command, whose name is given
+  by the first element in `%$cmdargs` according to the command table
+  `%$cmdtable`, and assign `?TRUE` to `%$b` --- in case it exists, do
   nothing and assign `?FALSE` to `%$b` otherwise.  A command function
   is called with `%$cmdargs` as its solely argument, so the function
   can have access to its command-line arguments;
+
+Therefore, faced with the string `"HELP VER"` in `%$cmdstr`,
+`command_run` would call `cmd_help` like this:
+
+<pre>
+? call, cmd_help, %$cmdargs
+</pre>
+
+and return `?TRUE`, whilst for the string `"QUIT"` it would just
+return `?FALSE` right away.
 
 See the file `lib/ui/command.qdt` for the implementation details of
 user interface command-line functions.
@@ -1564,10 +1621,10 @@ ongoing process.
   Evenly distribute throughout this time `%$numcalls` calls to the
   function `%$callback`, passing to it `%$callback_data` as its only
   argument;
-- __`progbar_draw_hfull, %$ticks, %$callback, %$callback_data, \
+- __`progbar_draw_hfull, %$ticks, %$callback, %$callback_data,
   %$numcalls`__: call `progbar_draw` with a full-width size and the
   remaining arguments;
-- __`progbar_draw_r, %$size, %$ticks, %$callback, %$callback_data, \
+- __`progbar_draw_r, %$size, %$ticks, %$callback, %$callback_data,
   %$numcalls`__: right align cursor and call `progbar_draw` with all
   arguments;
 
