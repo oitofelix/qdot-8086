@@ -43,7 +43,8 @@ fit all within 64kb segment boundaries).
 
 ### Download
 
-_QDot_ is free software and you can obtain its source code here.
+_QDot_ is free software under _GPLv3+_ and you can obtain its source
+code here.
 
 - [QDot86 0.1 source code]({{ page.base_local }}{{ site.baseurl }}/qdot-8086-0.1.tar.gz)
 - [VCS repository](http://github.com/oitofelix/qdot-8086/)
