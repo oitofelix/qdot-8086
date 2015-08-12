@@ -50,6 +50,12 @@ code here.
 - [VCS repository](http://github.com/oitofelix/qdot-8086/)
 
 
+### Contact
+
+You can discuss about _QDot_ with other users at its
+[#QDot86](irc://chat.freenode.net/QDot86) IRC channel.
+
+
 ### Documentation
 
 __Table of contents__
