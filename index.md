@@ -41,6 +41,7 @@ the tiny memory model (`.COM` binaries --- whose code, data and stack
 fit all within 64kb segment boundaries).
 
 - [QDot86 at FSF's Free Software Directory](http://directory.fsf.org/wiki/QDot_8086)
+- [#QDot86 IRC channel](irc://chat.freenode.net/QDot86)
 
 
 ### Download
@@ -50,12 +51,6 @@ code here.
 
 - [QDot86 0.1 source code]({{ page.base_local }}{{ site.baseurl }}/qdot-8086-0.1.tar.gz)
 - [VCS repository](http://github.com/oitofelix/qdot-8086/)
-
-
-### Contact
-
-You can discuss about _QDot_ with other users at its
-[#QDot86](irc://chat.freenode.net/QDot86) IRC channel.
 
 
 ### Documentation
