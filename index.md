@@ -40,6 +40,9 @@ couple of programs implemented in _QDot_ as a proof of concept:
 the tiny memory model (`.COM` binaries --- whose code, data and stack
 fit all within 64kb segment boundaries).
 
+- [QDot86 at FSF's Free Software Directory](http://directory.fsf.org/wiki/QDot_8086)
+- [#QDot86 IRC channel](irc://chat.freenode.net/QDot86)
+
 
 ### Download
 
